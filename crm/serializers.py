@@ -17,6 +17,14 @@ class ContractSerializer(serializers.ModelSerializer):
         model = models.Contract
         fields = '__all__'
 
+
+class ContractAddSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Contract
+        fields = '__all__'
+
+
 class EventSerializer(serializers.ModelSerializer):
 
     client = ClientSerializer()
@@ -24,3 +32,22 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Event
         fields = '__all__'
+
+class EventAddSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Event
+        fields = '__all__'
+
+class EventUpdateSerializer(serializers.ModelSerializer):
+   
+    class Meta:
+        model = models.Event
+        fields = ('event_status', 'attendees', 'event_date', 'notes', 'contract')
+
+    def save(self, **kwargs):
+        print(kwargs)
+        for r in self.validated_data:
+            print(r)
+
+        return super().save(**kwargs)

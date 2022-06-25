@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -21,12 +22,13 @@ class Client(models.Model):
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
+    def set_prospect_to_true(self):
+        self.prospect = True
+        self.save()
 
 class Contract(models.Model):
     sales_contact = models.ForeignKey(
-        User,
-        related_name="contracts",
-        on_delete=models.PROTECT)
+        User, related_name="contracts", on_delete=models.PROTECT)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
@@ -34,9 +36,23 @@ class Contract(models.Model):
     amount = models.FloatField()
     payment_due = models.DateField()
 
+    def __str__(self):
+        creation_date = date.strftime(self.date_created, "%d/%m/%Y")
+        return f"Contrat: {self.client} du {creation_date}"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.client.set_prospect_to_true()
+
 
 class Event_Status(models.Model):
     status = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.status:
+            return "The event is over"
+        else:
+            return "The event is not over"
 
 
 class Event(models.Model):
