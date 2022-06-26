@@ -28,6 +28,7 @@ class ContractAddSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
 
     client = ClientSerializer()
+    contract = ContractSerializer()
     
     class Meta:
         model = models.Event

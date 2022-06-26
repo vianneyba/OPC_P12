@@ -15,6 +15,18 @@ class ClientViewSet(viewsets.ModelViewSet):
         queryset = models.Client.objects.all()
         return queryset
 
+    def create(self, request, *args, **kwargs):
+        request.data._mutable = True
+        request.data["sales_contact"] = request.user.pk
+        request.data._mutable = False
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, pk=None):
+        request.data._mutable = True
+        request.data["sales_contact"] = request.user.pk
+        request.data._mutable = False
+        return super().update(request, pk)
+
 
 class ContractViewSet(viewsets.ModelViewSet):
 
@@ -29,6 +41,18 @@ class ContractViewSet(viewsets.ModelViewSet):
         else:
             return serializers.ContractSerializer
 
+    def create(self, request, *args, **kwargs):
+        request.data._mutable = True
+        request.data["sales_contact"] = request.user.pk
+        request.data._mutable = False
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, pk=None):
+        request.data._mutable = True
+        request.data["sales_contact"] = request.user.pk
+        request.data._mutable = False
+        return super().update(request, pk)
+
 
 class EventViewSet(viewsets.ModelViewSet):
 
@@ -42,7 +66,22 @@ class EventViewSet(viewsets.ModelViewSet):
             return serializers.EventUpdateSerializer
         else:
             return serializers.EventSerializer
+        
+    def create(self, request, *args, **kwargs):
+        contract = models.Contract.objects.get(pk=request.data["contract"])
+        request.data._mutable = True
+        request.data["client"] = contract.client.pk
+        request.data["sales_contact"] = request.user.pk
+        request.data._mutable = False
+        return super().create(request, *args, **kwargs)
 
+    def update(self, request, pk=None):
+        contract = models.Contract.objects.get(pk=request.data["contract"])
+        request.data._mutable = True
+        request.data["client"] = contract.client.pk
+        request.data["sales_contact"] = request.user.pk
+        request.data._mutable = False
+        return super().update(request, pk)
 
 class UserViewSet(viewsets.ModelViewSet):
 

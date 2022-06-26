@@ -26,6 +26,7 @@ class Client(models.Model):
         self.prospect = True
         self.save()
 
+
 class Contract(models.Model):
     sales_contact = models.ForeignKey(
         User, related_name="contracts", on_delete=models.PROTECT)
@@ -50,9 +51,9 @@ class Event_Status(models.Model):
 
     def __str__(self):
         if self.status:
-            return "The event is over"
-        else:
             return "The event is not over"
+        else:
+            return "The event is over"
 
 
 class Event(models.Model):
@@ -69,4 +70,8 @@ class Event(models.Model):
     attendees = models.PositiveIntegerField(null=True, blank=True)
     event_date = models.DateTimeField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
-    contract = models.OneToOneField(Contract, on_delete=models.CASCADE, blank=True, null=True)
+    contract = models.OneToOneField(Contract, on_delete=models.CASCADE, blank=False, null=False)
+
+    def __str__(self):
+        creation_date = date.strftime(self.date_created, "%d/%m/%Y")
+        return f"Event: {self.client} du {creation_date} ({self.event_status})"

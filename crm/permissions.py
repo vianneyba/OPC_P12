@@ -10,7 +10,7 @@ def permission(user, action, module, obj=None):
         return user.has_perm(f'{module[0]}.add_{module[1]}')
     elif action in ['update', 'partial_update']:
         if module[1] == 'event':
-            if obj is not None and user == obj.support_contact:
+            if obj is not None and user == obj.support_contact and obj.event_status.pk == 1:
                 return True
         elif module[1] == 'contract':
             if obj is not None and user == obj.sales_contact:
